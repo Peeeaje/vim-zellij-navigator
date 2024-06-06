@@ -101,7 +101,12 @@ impl State {
     }
 
     fn execute_command(&mut self, command: Command) {
-        if self.current_pane_is_vim() {
+        if self.current_pane_is("vim")
+            || self.current_pane_is("nvim")
+            || self.current_pane_is("bash")
+            || self.current_pane_is("fzf")
+            || self.current_pane_is("atuin")
+        {
             write_chars(&self.command_to_keybind(&command));
             return;
         }
@@ -115,11 +120,9 @@ impl State {
         }
     }
 
-    fn current_pane_is_vim(&self) -> bool {
+    fn current_pane_is(&self, command: &str) -> bool {
         if let Some(current_command) = &self.current_term_command {
-            if current_command == "nvim" || current_command == "vim" {
-                return true;
-            }
+            return current_command == command;
         }
         false
     }
